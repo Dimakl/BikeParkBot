@@ -23,10 +23,9 @@ def request_location(update, context):
     location_keyboard_add = \
         telegram.KeyboardButton(text="Я стою на парковке и хочу добавить ее!")
     location_keyboard_address = telegram.KeyboardButton(text="Найди мне парковку по заданной локации!")
-    reply_markup = telegram.ReplyKeyboardMarkup([[location_keyboard_find], [location_keyboard_add], [location_keyboard_address]])
-
+    reply_markup = \
+        telegram.ReplyKeyboardMarkup([[location_keyboard_find], [location_keyboard_address]])
     update.message.reply_text('Отправьте локацию:', reply_markup=reply_markup)
-
 
 def compute_location(update, context):
     location = update.message.location
@@ -35,11 +34,16 @@ def compute_location(update, context):
     point = maps.Path(location)
     nearest_points = point.find_n_nearest(3, data)
     print(nearest_points)
-    for coords in nearest_points:
-        image = point.gen_route_to(coords)
-        file = image.read()
-        with open("test", "wb") as f:
-            f.write(file)
+    images = []
+    for i in range(3):
+        image = point.gen_route_to(nearest_points[i])
+        with open("image" + str(update.message.chat.id) + str(i), "wb") as f:
+            f.write(image.read())
+        images.append("image" + str(update.message.chat.id) + str(i))
+
+    for image in images:
+        context.bot.sendPhoto(update.message.chat.id, open(image, 'rb'))
+
 
 
 def parse_json():
@@ -66,6 +70,7 @@ def main():
 
     updater = Updater("956994519:AAHNHMkrKR3D4ppbe-mLOCdVIDM1aHBFSuQ", use_context=True, request_kwargs=REQUEST_KWARGS)
 
+    #updater.dispatcher.add_handler(Filters.regex("^Найди мне парковку по заданной локации\!$", ))
     updater.dispatcher.add_handler(MessageHandler(Filters.text, request_location))
     updater.dispatcher.add_handler(MessageHandler(Filters.location, compute_location))
 
