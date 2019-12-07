@@ -10,6 +10,7 @@ import logging
 
 import json
 import telegram
+import maps
 from telegram.ext import Updater, Filters, MessageHandler
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -18,8 +19,10 @@ logger = logging.getLogger(__name__)
 
 
 def request_location(update, context):
-    location_keyboard = telegram.KeyboardButton(text="send_location", request_location=True)
-    reply_markup = telegram.ReplyKeyboardMarkup([[location_keyboard]])
+    location_keyboard_find = telegram.KeyboardButton(text="Найди мне парковку!", request_location=True)
+    location_keyboard_add = \
+        telegram.KeyboardButton(text="Я стою на парковке и хочу добавить ее !")
+    reply_markup = telegram.ReplyKeyboardMarkup([[location_keyboard_find], [location_keyboard_add]])
 
     update.message.reply_text('Отправьте локацию:', reply_markup=reply_markup)
 
@@ -27,8 +30,15 @@ def request_location(update, context):
 def compute_location(update, context):
     location = update.message.location
     location = [location['longitude'], location['latitude']]
-    print(location)
-    print(parse_json())
+    data = parse_json()
+    point = maps.Path(location)
+    nearest_points = point.find_n_nearest(3, data)
+    print(nearest_points)
+    for coords in nearest_points:
+        image = point.gen_route_to(coords)
+        file = image.read()
+        with open("test", "wb") as f:
+            f.write(file)
 
 
 def parse_json():
@@ -40,6 +50,7 @@ def parse_json():
         all_dots.append(obj['geoData']['coordinates'])
 
     return all_dots
+
 
 def main():
 
@@ -64,3 +75,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
