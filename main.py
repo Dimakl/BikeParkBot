@@ -21,15 +21,16 @@ logger = logging.getLogger(__name__)
 def request_location(update, context):
     location_keyboard_find = telegram.KeyboardButton(text="Найди мне парковку!", request_location=True)
     location_keyboard_add = \
-        telegram.KeyboardButton(text="Я стою на парковке и хочу добавить ее !")
-    reply_markup = telegram.ReplyKeyboardMarkup([[location_keyboard_find], [location_keyboard_add]])
+        telegram.KeyboardButton(text="Я стою на парковке и хочу добавить ее!")
+    location_keyboard_address = telegram.KeyboardButton(text="Найди мне парковку по заданной локации!")
+    reply_markup = telegram.ReplyKeyboardMarkup([[location_keyboard_find], [location_keyboard_add], [location_keyboard_address]])
 
     update.message.reply_text('Отправьте локацию:', reply_markup=reply_markup)
 
 
 def compute_location(update, context):
     location = update.message.location
-    location = [location['longitude'], location['latitude']]
+    location = [location['latitude'], location['longitude']]
     data = parse_json()
     point = maps.Path(location)
     nearest_points = point.find_n_nearest(3, data)
@@ -47,7 +48,7 @@ def parse_json():
     with codecs.open('VeloParkData.json', 'r', 'utf-8-sig') as f:
         off_data = json.load(f)
     for obj in off_data:
-        all_dots.append(obj['geoData']['coordinates'])
+        all_dots.append(obj['geoData']['coordinates'][::-1])
 
     return all_dots
 
