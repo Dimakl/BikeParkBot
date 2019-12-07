@@ -38,16 +38,17 @@ class Path:
             "mode" : "fastest;bicycle"
 
         }
-        test = get("https://route.api.here.com/routing/7.2/calculateroute.json", param={
+        test = get("https://route.api.here.com/routing/7.2/calculateroute.json", params={
             "app_id": APP_ID,
             "app_code": APP_CODE,
             "waypoint0": start,
             "waypoint1": dest,
-            "mode": "fastest;bicycle"
+            "mode": "fastest;bicycle",
         })
-        print(params)
+
         resp = get(target_url, params=params)
-        return BytesIO(resp.content)
+        travel_time = (int(test.json()['response']['route'][0]['summary']['distance']))
+        return BytesIO(resp.content), travel_time
 
 
     def find_n_nearest(self, n, parkings):
