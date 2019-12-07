@@ -5,8 +5,10 @@
 """
 Basic example for a bot that uses inline keyboards.
 """
+import codecs
 import logging
 
+import json
 import telegram
 from telegram.ext import Updater, Filters, MessageHandler
 
@@ -24,8 +26,20 @@ def request_location(update, context):
 
 def compute_location(update, context):
     location = update.message.location
+    location = [location['longitude'], location['latitude']]
     print(location)
+    print(parse_json())
 
+
+def parse_json():
+    all_dots = []
+
+    with codecs.open('VeloParkData.json', 'r', 'utf-8-sig') as f:
+        off_data = json.load(f)
+    for obj in off_data:
+        all_dots.append(obj['geoData']['coordinates'])
+
+    return all_dots
 
 def main():
 

@@ -1,4 +1,6 @@
 import logging
+import geopy
+import geopy.distance
 logger = logging.getLogger(__name__)
 from config import APP_CODE, APP_ID, WIDTH, HEIGHT, PPI, LINE_WIDTH, STREET_VIEW_TYPE, LINE_COLOR
 
@@ -35,6 +37,9 @@ class Path:
 
         }
 
-    def find_n_nearest(self, n):
-        pass
-
+    def find_n_nearest(self, n, parkings):
+        pts = [ geopy.Point(p[0],p[1]) for p in parkings]
+        onept = geopy.Point(self.coords[0],self.coords[1])
+        alldist = [ (p,geopy.distance.distance(p, onept).km) for p in pts ]
+        nearest_point = sorted(alldist, key=lambda x: (x[1]))[0]
+        return [[k[0][0], k[0][1]] for k in nearest_point]
