@@ -38,6 +38,13 @@ class Path:
             "mode" : "fastest;bicycle"
 
         }
+        test = get("https://route.api.here.com/routing/7.2/calculateroute.json", param={
+            "app_id": APP_ID,
+            "app_code": APP_CODE,
+            "waypoint0": start,
+            "waypoint1": dest,
+            "mode": "fastest;bicycle"
+        })
         print(params)
         resp = get(target_url, params=params)
         return BytesIO(resp.content)
