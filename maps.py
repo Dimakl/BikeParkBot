@@ -2,6 +2,7 @@ import logging
 import geopy
 import geopy.distance
 logger = logging.getLogger(__name__)
+from config import APP_CODE, APP_ID, WIDTH, HEIGHT, PPI, LINE_WIDTH, STREET_VIEW_TYPE, LINE_COLOR
 
 
 class Path:
@@ -18,7 +19,25 @@ class Path:
     generate map image with route
     """
     def gen_route_to(self, parking_coords):
+        target_url = "https://image.maps.api.here.com/mia/1.6/routing"
+
+        d = "lc=1652B4&" + "lw=6&t=0&"
+
+        params = {
+            "app_id": APP_ID,
+            "app_code": APP_CODE,
+            "waypoint0": "{0}, {1}".format(*self.coords),
+            "waypoint1": "{0}, {1}".format(*parking_coords),
+            "w": WIDTH,
+            "h": HEIGHT,
+            "ppi": PPI,
+            "lw": LINE_WIDTH,
+            "t": STREET_VIEW_TYPE,
+            "lc": LINE_COLOR
+
+        }
         pass
+
 
     def find_n_nearest(n, parkings, coordinate):
         # the solution
