@@ -35,7 +35,7 @@ class Path:
             "lc": LINE_COLOR
 
         }
-        resp = get(target_url, dict=params)
+        resp = get(target_url, params=params)
         return BytesIO(resp.content)
 
 
