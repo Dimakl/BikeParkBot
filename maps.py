@@ -2,9 +2,8 @@ import logging
 import geopy
 import geopy.distance
 logger = logging.getLogger(__name__)
-from config import APP_CODE, APP_ID, WIDTH, HEIGHT, PPI, LINE_WIDTH, STREET_VIEW_TYPE, LINE_COLOR
+from config import APP_CODE, APP_ID, WIDTH, HEIGHT, PPI, LINE_WIDTH, STREET_VIEW_TYPE, LINE_COLOR, DEST_COLOR
 from requests import get
-from PIL import Image
 from io import BytesIO
 class Path:
     def __init__(self, coords):
@@ -21,18 +20,21 @@ class Path:
     """
     def gen_route_to(self, parking_coords):
         target_url = "https://image.maps.api.here.com/mia/1.6/routing"
+        start="{0},{1}".format(*self.coords)
+        dest = "{0},{1}".format(*parking_coords)
 
         params = {
             "app_id": APP_ID,
             "app_code": APP_CODE,
-            "waypoint0": "{0}, {1}".format(*self.coords),
-            "waypoint1": "{0}, {1}".format(*parking_coords),
+            "waypoint0": start,
+            "waypoint1": dest,
             "w": WIDTH,
             "h": HEIGHT,
-            "ppi": PPI,
+            #"ppi": PPI,
             "lw": LINE_WIDTH,
             "t": STREET_VIEW_TYPE,
-            "lc": LINE_COLOR
+            "lc": LINE_COLOR,
+            "poix0": "{0};{1};{1};11;.".format(dest, DEST_COLOR),
 
         }
         resp = get(target_url, params=params)
