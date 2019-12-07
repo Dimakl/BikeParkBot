@@ -20,10 +20,10 @@ logger = logging.getLogger(__name__)
 
 
 def request_location(update, context):
-    location_keyboard_find = telegram.KeyboardButton(text="Найди мне парковку!", request_location=True)
+    location_keyboard_find = telegram.KeyboardButton(text="Найди мне ближайшую парковку!", request_location=True)
     reply_markup = \
         telegram.ReplyKeyboardMarkup([[location_keyboard_find]])
-    update.message.reply_text('Отправьте локацию:', reply_markup=reply_markup)
+    update.message.reply_text('Отправьте локацию или нажмите на кнопку:', reply_markup=reply_markup)
 
 def compute_location(update, context):
     location = update.message.location
@@ -33,15 +33,15 @@ def compute_location(update, context):
     nearest_points = point.find_n_nearest(3, data)
     print(nearest_points)
     images = []
-    for i in range(3):
-        image = point.gen_route_to(nearest_points[i])
+    for i in range(1):
+        image, distance, time_travel = point.gen_route_to(nearest_points[i])
         with open("image" + str(update.message.chat.id) + str(i), "wb") as f:
             f.write(image.read())
         images.append("image" + str(update.message.chat.id) + str(i))
 
     for image in images:
         context.bot.sendPhoto\
-            (update.message.chat.id, open(image, 'rb'), caption="Ближайшие велопарковки (Почти за углом)")
+            (update.message.chat.id, open(image, 'rb'), caption="🚲 🅿 \nБлижайшая велопарковка в {} метрах! ({} мин.)".format(distance, time_travel))
 
 
 
@@ -70,6 +70,7 @@ def main():
     updater = Updater("956994519:AAHNHMkrKR3D4ppbe-mLOCdVIDM1aHBFSuQ", use_context=True, request_kwargs=REQUEST_KWARGS)
 
     updater.dispatcher.add_handler(MessageHandler(Filters.text, request_location))
+    updater.dispatcher.add_handler(MessageHandler(Filters.command, request_location))
     updater.dispatcher.add_handler(MessageHandler(Filters.location, compute_location))
 
     updater.start_polling()

@@ -47,8 +47,9 @@ class Path:
         })
 
         resp = get(target_url, params=params)
-        travel_time = (int(test.json()['response']['route'][0]['summary']['distance']))
-        return BytesIO(resp.content), travel_time
+        distance = (int(test.json()['response']['route'][0]['summary']['distance']))
+        travel_time = (int(test.json()['response']['route'][0]['summary']['travelTime']))//60
+        return BytesIO(resp.content), distance, travel_time
 
 
     def find_n_nearest(self, n, parkings):
