@@ -41,7 +41,7 @@ class Path:
 
     def find_n_nearest(n, parkings, coordinate):
         # the solution
-        pts = [geopy.Point(p[0], p[1]) for p in ccoordinate_list]
+        pts = [geopy.Point(p[0], p[1]) for p in parkings]
         onept = geopy.Point(coordinate[0], coordinate[1])
         alldist = [(p, geopy.distance.distance(p, onept).km) for p in pts]
         nearest_point = sorted(alldist, key=lambda x: (x[1]))[:n]
