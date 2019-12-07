@@ -35,6 +35,7 @@ class Path:
             "t": STREET_VIEW_TYPE,
             "lc": LINE_COLOR,
             "poix0": "{0};{1};{1};11;.".format(dest, DEST_COLOR),
+            "mode" : "fastest;bicycle"
 
         }
         print(params)
