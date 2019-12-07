@@ -21,10 +21,8 @@ class Path:
         pass
 
     def find_n_nearest(self, n, parkings):
-        # your data
-        # the solution
         pts = [ geopy.Point(p[0],p[1]) for p in parkings]
         onept = geopy.Point(self.coords[0],self.coords[1])
         alldist = [ (p,geopy.distance.distance(p, onept).km) for p in pts ]
         nearest_point = sorted(alldist, key=lambda x: (x[1]))[0]
-        pass
+        return [[k[0][0], k[0][1]] for k in nearest_point]
