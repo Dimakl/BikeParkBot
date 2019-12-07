@@ -3,8 +3,9 @@ import geopy
 import geopy.distance
 logger = logging.getLogger(__name__)
 from config import APP_CODE, APP_ID, WIDTH, HEIGHT, PPI, LINE_WIDTH, STREET_VIEW_TYPE, LINE_COLOR
-
-
+from requests import get
+from PIL import Image
+from io import BytesIO
 class Path:
     def __init__(self, coords):
         self.coords = coords
@@ -21,8 +22,6 @@ class Path:
     def gen_route_to(self, parking_coords):
         target_url = "https://image.maps.api.here.com/mia/1.6/routing"
 
-        d = "lc=1652B4&" + "lw=6&t=0&"
-
         params = {
             "app_id": APP_ID,
             "app_code": APP_CODE,
@@ -36,7 +35,8 @@ class Path:
             "lc": LINE_COLOR
 
         }
-        pass
+        resp = get(target_url, dict=params)
+        return BytesIO(resp.content)
 
 
     def find_n_nearest(self, n, parkings):
