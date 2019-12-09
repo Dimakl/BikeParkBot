@@ -67,7 +67,7 @@ def main():
         }
     }
 
-    updater = Updater("956994519:AAHNHMkrKR3D4ppbe-mLOCdVIDM1aHBFSuQ", use_context=True, request_kwargs=REQUEST_KWARGS)
+    updater = Updater(TOKEN, use_context=True, request_kwargs=REQUEST_KWARGS)
 
     updater.dispatcher.add_handler(MessageHandler(Filters.text, request_location))
     updater.dispatcher.add_handler(MessageHandler(Filters.command, request_location))
