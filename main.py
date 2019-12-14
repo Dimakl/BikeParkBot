@@ -59,11 +59,11 @@ def parse_json():
 def main():
 
     REQUEST_KWARGS = {
-        'proxy_url': 'socks5://185.73.240.95:1080',
+        'proxy_url': PROXY_URL,
 
         'urllib3_proxy_kwargs': {
-            'username': 'k4proxy',
-            'password': 'sosipisos8464'
+            'username': PROXY_USERNAME,
+            'password': PROXY_PASSWORD
         }
     }
 
